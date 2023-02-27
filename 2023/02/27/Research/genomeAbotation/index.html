@@ -1,0 +1,171 @@
+<!DOCTYPE html><html lang="cn-en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>基因组基因结构注释之RNAseq-maker-augusts-maker | 在四亿年的自然历史里去寻找生命的规律</title><meta name="author" content="未名湖蜘蛛"><meta name="copyright" content="未名湖蜘蛛"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="基因结构注释简化为5步第一步，用hisat2和stringtie将RNAseq数据比对到基因组，然后用gffread处理为maker第1轮的EST输入 12345678910111213141516171819202122232425hisat2-2.2.1&#x2F;hisat2-build ..&#x2F;Ume_HiC.fasta Ume_HiC.fastafor i in M1-body1 M1-head M">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基因组基因结构注释之RNAseq-maker-augusts-maker">
+<meta property="og:url" content="https://lifan18.github.io/2023/02/27/Research/genomeAbotation/index.html">
+<meta property="og:site_name" content="在四亿年的自然历史里去寻找生命的规律">
+<meta property="og:description" content="基因结构注释简化为5步第一步，用hisat2和stringtie将RNAseq数据比对到基因组，然后用gffread处理为maker第1轮的EST输入 12345678910111213141516171819202122232425hisat2-2.2.1&#x2F;hisat2-build ..&#x2F;Ume_HiC.fasta Ume_HiC.fastafor i in M1-body1 M1-head M">
+<meta property="og:locale" content="cn_EN">
+<meta property="og:image" content="https://lifan18.github.io/img/me.png">
+<meta property="article:published_time" content="2023-02-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-27T14:49:30.724Z">
+<meta property="article:author" content="未名湖蜘蛛">
+<meta property="article:tag" content="基因组注释">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lifan18.github.io/img/me.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://lifan18.github.io/2023/02/27/Research/genomeAbotation/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '基因组基因结构注释之RNAseq-maker-augusts-maker',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2023-02-27 22:49:30'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/me.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页/Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴/Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签/Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类/Categories</span></a></div><div class="menus_item"><a class="site-page" href="/photos/"><span> 图册/Photos</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单/List:</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐/Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影/Movie</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接/Link</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于/About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/sentosa.png')"><nav id="nav"><span id="blog-info"><a href="/" title="在四亿年的自然历史里去寻找生命的规律"><img class="site-icon" src="/img/weiming.png"/></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页/Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴/Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签/Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类/Categories</span></a></div><div class="menus_item"><a class="site-page" href="/photos/"><span> 图册/Photos</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单/List:</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐/Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影/Movie</span></a></li><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接/Link</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于/About</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">基因组基因结构注释之RNAseq-maker-augusts-maker</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-02-26T16:00:00.000Z" title="Created 2023-02-27 00:00:00">2023-02-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-02-27T14:49:30.724Z" title="Updated 2023-02-27 22:49:30">2023-02-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%94%9F%E4%BF%A1/">生信</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="基因组基因结构注释之RNAseq-maker-augusts-maker"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><strong>基因结构注释</strong><br>简化为5步<br>第一步，用<em>hisat2</em>和<em>stringtie</em>将RNAseq数据比对到基因组，然后用<em>gffread</em>处理为maker第1轮的EST输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">hisat2-2.2.1/hisat2-build ../Ume_HiC.fasta Ume_HiC.fasta<br><br><br>for i in M1-body1 M1-head M2-body1 M2-head<br>do<br>hisat2-2.2.1/hisat2 --dta -p 12 -x Ume_HiC.fasta -1 $&#123;i&#125;-1124_*************-1a_1.clean.fq.gz -2 $&#123;i&#125;-1124_*************-1a_2.clean.fq.gz | samtools sort -@ 12 &gt; $&#123;i&#125;.bam 2&gt; $&#123;i&#125;.log<br>done<br><br><br>for i in M1-body1 M1-head M2-body1 M2-head<br>do<br>java -Xmx20g -XX:MetaspaceSize=15g -XX:MaxMetaspaceSize=15g -XX:ParallelGCThreads=6 -Djava.io.tmpdir=bla -jar /usr/share/picard-tools-1.96/BuildBamIndex.jar INPUT=$&#123;i&#125;.bam VALIDATION_STRINGENCY=LENIENT<br>stringtie-2.1.4.Linux_x86_64/stringtie -p 6 -o $&#123;i&#125;.gtf $&#123;i&#125;.bam<br>done<br><br>samtools merge -@ 10 merge.bam M1-body1.bam M1-head.bam M2-body1.bam M2-head.bam<br>stringtie-2.1.4.Linux_x86_64/stringtie -p 6 -o merge.gtf merge.bam<br><br>gffread-master/gffread -E merge.gtf -o - | sed -e &quot;s#transcript#match#g&quot; -e &quot;s#exon#match_part#g&quot; &gt; merge.gff<br><br>gffread-master/gffread -E merge.gtf -o - | sed -e &quot;s#transcript#mRNA#g&quot; -e &quot;s#exon#CDS#g&quot; &gt; mergeRaw.gff<br>gffread-master/gffread mergeRaw.gff -g ../Ume_HiC.fasta.masked -x merge.fa<br><br><br><br></code></pre></td></tr></table></figure>
+<p>第二步，将以上得到的EST的fa和gff，整合已知的蛋白序列集，用于maker第1轮预测</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs maker_opts_R1.ctl">#-----Genome (these are always required)<br>genome=HiC.fasta.masked #genome sequence (fasta file or fasta embeded in GFF3 file)<br>organism_type=eukaryotic #eukaryotic or prokaryotic. Default is eukaryotic<br><br>#-----Re-annotation Using MAKER Derived GFF3<br>maker_gff= #MAKER derived GFF3 file<br>est_pass=0 #use ESTs in maker_gff: 1 = yes, 0 = no<br>altest_pass=0 #use alternate organism ESTs in maker_gff: 1 = yes, 0 = no<br>protein_pass=0 #use protein alignments in maker_gff: 1 = yes, 0 = no<br>rm_pass=0 #use repeats in maker_gff: 1 = yes, 0 = no<br>model_pass=0 #use gene models in maker_gff: 1 = yes, 0 = no<br>pred_pass=0 #use ab-initio predictions in maker_gff: 1 = yes, 0 = no<br>other_pass=0 #passthrough anyything else in maker_gff: 1 = yes, 0 = no<br><br>#-----EST Evidence (for best results provide a file for at least one)<br>est=merge.fa #set of ESTs or assembled mRNA-seq in fasta format<br>altest= #EST/cDNA sequence file in fasta format from an alternate organism<br>est_gff=merge.gff #aligned ESTs or mRNA-seq from an external GFF3 file<br>altest_gff= #aligned ESTs from a closly relate species in GFF3 format<br><br>#-----Protein Homology Evidence (for best results provide a file for at least one)<br>protein=Comparative_genomics/uniprot_sprot.fasta  #protein sequence file in fasta format (i.e. from mutiple oransisms)<br>protein_gff=  #aligned protein homology evidence from an external GFF3 file<br><br>#-----Repeat Masking (leave values blank to skip repeat masking)<br>model_org= #select a model organism for RepBase masking in RepeatMasker<br>rmlib= #provide an organism specific repeat library in fasta format for RepeatMasker<br>repeat_protein= #provide a fasta file of transposable element proteins for RepeatRunner<br>rm_gff= #pre-identified repeat elements from an external GFF3 file<br>prok_rm=0 #forces MAKER to repeatmask prokaryotes (no reason to change this), 1 = yes, 0 = no<br>softmask=0 #use soft-masking rather than hard-masking in BLAST (i.e. seg and dust filtering)<br><br>#-----Gene Prediction<br>snaphmm= #SNAP HMM file<br>gmhmm= #GeneMark HMM file<br>augustus_species= #Augustus gene prediction species model<br>fgenesh_par_file= #FGENESH parameter file<br>pred_gff= #ab-initio predictions from an external GFF3 file<br>model_gff= #annotated gene models from an external GFF3 file (annotation pass-through)<br>est2genome=1 #infer gene predictions directly from ESTs, 1 = yes, 0 = no<br>protein2genome=1 #infer predictions from protein homology, 1 = yes, 0 = no<br>trna=0 #find tRNAs with tRNAscan, 1 = yes, 0 = no<br>snoscan_rrna= #rRNA file to have Snoscan find snoRNAs<br>unmask=0 #also run ab-initio prediction programs on unmasked sequence, 1 = yes, 0 = no<br><br>#-----Other Annotation Feature Types (features MAKER doesn&#x27;t recognize)<br>other_gff= #extra features to pass-through to final MAKER generated GFF3 file<br><br>#-----External Application Behavior Options<br>alt_peptide=C #amino acid used to replace non-standard amino acids in BLAST databases<br>cpus=1 #max number of cpus to use in BLAST and RepeatMasker (not for MPI, leave 1 when using MPI)<br><br>#-----MAKER Behavior Options<br>max_dna_len=200000 #length for dividing up contigs into chunks (increases/decreases memory usage)<br>min_contig=10000 #skip genome contigs below this length (under 10kb are often useless)<br><br>pred_flank=200 #flank for extending evidence clusters sent to gene predictors<br>pred_stats=0 #report AED and QI statistics for all predictions as well as models<br>AED_threshold=1 #Maximum Annotation Edit Distance allowed (bound by 0 and 1)<br>min_protein=0 #require at least this many amino acids in predicted proteins<br>alt_splice=0 #Take extra steps to try and find alternative splicing, 1 = yes, 0 = no<br>always_complete=0 #extra steps to force start and stop codons, 1 = yes, 0 = no<br>map_forward=0 #map names and attributes forward from old GFF3 genes, 1 = yes, 0 = no<br>keep_preds=0 #Concordance threshold to add unsupported gene prediction (bound by 0 and 1)<br><br>split_hit=10000 #length for the splitting of hits (expected max intron size for evidence alignments)<br>single_exon=0 #consider single exon EST evidence when generating annotations, 1 = yes, 0 = no<br>single_length=250 #min length required for single exon ESTs if &#x27;single_exon is enabled&#x27;<br>correct_est_fusion=0 #limits use of ESTs in annotation to avoid fusion genes<br><br>tries=2 #number of times to try a contig if there is a failure for some reason<br>clean_try=0 #remove all data from previous run before retrying, 1 = yes, 0 = no<br>clean_up=0 #removes theVoid directory with individual analysis files, 1 = yes, 0 = no<br>TMP=/datatemp/ #specify a directory other than the system default temporary directory for temporary files<br></code></pre></td></tr></table></figure>
+<p>第三步，将第1轮maker预测得到的结果用于augusts的模型训练</p>
+<p>第四步，将augusts模型训练后预测的结果用maker进行第2轮整合</p>
+<p>第五步，根据情况反复maker整合轮数</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://lifan18.github.io">LI Fan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://lifan18.github.io/2023/02/27/Research/genomeAbotation/">https://lifan18.github.io/2023/02/27/Research/genomeAbotation/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%9F%BA%E5%9B%A0%E7%BB%84%E6%B3%A8%E9%87%8A/">基因组注释</a></div><div class="post_share"><div class="social-share" data-image="/img/me.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/02/27/Research/papers/" title="发表论文"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">发表论文</div></div></a></div><div class="next-post pull-right"><a href="/2022/07/12/Daily_Life/Life%20rescue/" title="心肺复苏急救基本知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">心肺复苏急救基本知识</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/me.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">未名湖蜘蛛</div><div class="author-info__description">进化之光点亮了地球</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lifan18"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/lifan18" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">时代是航行的泰坦尼克号，乘风波浪，霹雳向前，你我都是船上的过客，片刻的壮美，不会永留。Enjoy~</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/27/PKU/PKU/" title="PKU">PKU</a><time datetime="2023-02-27T02:17:31.000Z" title="Created 2023-02-27 10:17:31">2023-02-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/27/BugNotes/%E5%8D%9A%E5%AE%A2%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/" title="在hexo用md插入博客图片无法显示">在hexo用md插入博客图片无法显示</a><time datetime="2023-02-26T16:00:00.000Z" title="Created 2023-02-27 00:00:00">2023-02-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/27/BugNotes/BioinfoLearning/" title="生物信息基础知识笔记">生物信息基础知识笔记</a><time datetime="2023-02-26T16:00:00.000Z" title="Created 2023-02-27 00:00:00">2023-02-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/27/BugNotes/HiC-3dDNA/" title="如何使用Juicebox 对juicer和3dDNA运行后的HiC结果进行可视化编辑">如何使用Juicebox 对juicer和3dDNA运行后的HiC结果进行可视化编辑</a><time datetime="2023-02-26T16:00:00.000Z" title="Created 2023-02-27 00:00:00">2023-02-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/27/Research/water-spider/" title="了不起的水蛛">了不起的水蛛</a><time datetime="2023-02-26T16:00:00.000Z" title="Created 2023-02-27 00:00:00">2023-02-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 未名湖蜘蛛</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
